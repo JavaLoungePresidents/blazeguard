@@ -1,7 +1,9 @@
+import AppNavbar from "@/components/AppNavbar";
+
 const Index = () => {
   return (
     <>
-      <h1>BlazeGuard</h1>
+      <AppNavbar />
     </>
   );
 };
