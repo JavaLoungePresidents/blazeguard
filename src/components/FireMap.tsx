@@ -98,9 +98,6 @@ const FireMap = ({ coordinates }: FireMapProps) => {
   return (
     <div className="map">
       <GoogleMap
-        ref={(map) => {
-          mapRef.current = map;
-        }}
         mapContainerStyle={{
           height: "75vh",
           width: "95%",
@@ -112,6 +109,9 @@ const FireMap = ({ coordinates }: FireMapProps) => {
         zoom={5}
         onZoomChanged={handleZoomChange}
         onCenterChanged={handleCenterChange}
+        onLoad={(map) => {
+          mapRef.current = map;
+        }}
         options={{
           minZoom: 3,
           maxZoom: 10,
