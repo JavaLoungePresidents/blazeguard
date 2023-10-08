@@ -25,8 +25,6 @@ const AppNavbar = ({ updateGlobalLocation }: AppNavbarProps) => {
   });
 
   const handleLocationChange = (newLocation: Location) => {
-    console.log("HANDLE LOCATION NAV RUN!");
-    console.log("NAV LOCATION", newLocation);
     setLocation(newLocation);
     updateGlobalLocation(newLocation);
   };

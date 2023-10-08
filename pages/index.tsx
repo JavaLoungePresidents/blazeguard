@@ -21,7 +21,6 @@ const Index = () => {
 
   const updateLocation = (newLocation: Location) => {
     if (!newLocation.lat && !newLocation.lng) return;
-    console.log("HANDLE LOCATION INDEX RUN!");
     setCoordinates({ lat: newLocation.lat, lng: newLocation.lng });
     setTextLocation(newLocation.textLocation);
   };

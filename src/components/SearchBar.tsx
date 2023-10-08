@@ -24,7 +24,6 @@ const SearchBar = ({ onLocationChange }: SearchBarProps) => {
   });
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("HANDLE LOCATION SEARCH RUN!");
     setLocValue(event.target.value);
     setValue(event.target.value);
   };
