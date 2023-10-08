@@ -14,10 +14,7 @@ interface FireMapProps {
 const FireMap = ({ coordinates }: FireMapProps) => {
   const [fireMarkers, setFireMarkers] = useState<JSX.Element[]>([]);
   const [questionMarkers, setQuestionMarkers] = useState<JSX.Element[]>([]);
-  const [center, setCenter] = useState(coordinates);
   const [zoom, setZoom] = useState(5);
-
-  const mapRef = useRef<google.maps.Map>();
 
   useEffect(() => {
     const fetchFireMarkers = async () => {
@@ -88,13 +85,6 @@ const FireMap = ({ coordinates }: FireMapProps) => {
     setZoom(zoom + 1);
   };
 
-  const handleCenterChange = () => {
-    const newCenter = mapRef.current?.getCenter();
-    if (newCenter) {
-      setCenter({ lat: newCenter.lat(), lng: newCenter.lng() });
-    }
-  };
-
   return (
     <div className="map">
       <GoogleMap
@@ -105,13 +95,9 @@ const FireMap = ({ coordinates }: FireMapProps) => {
           borderRadius: "18px",
           overflow: "hidden",
         }}
-        center={{ lat: center.lat, lng: center.lng }}
+        center={{ lat: coordinates.lat, lng: coordinates.lng }}
         zoom={5}
         onZoomChanged={handleZoomChange}
-        onCenterChanged={handleCenterChange}
-        onLoad={(map) => {
-          mapRef.current = map;
-        }}
         options={{
           minZoom: 3,
           maxZoom: 10,
