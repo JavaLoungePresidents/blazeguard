@@ -1,6 +1,7 @@
 import AppNavbar from "@/components/AppNavbar";
 import Heading from "@/components/Heading";
 import FireMap from "@/components/FireMap";
+import CardContainer from "@/components/CardContainer";
 import { useState } from "react";
 
 interface Coordinates {

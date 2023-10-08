@@ -1,11 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 
-const containerStyle = {
-  width: "900px",
-  height: "600px",
-};
-
 const fireMarkerURI = "/images/fire-marker.svg";
 const questionMarkerURI = "/images/question-marker.svg";
 
@@ -101,31 +96,39 @@ const FireMap = ({ coordinates }: FireMapProps) => {
   };
 
   return (
-    <GoogleMap
-      ref={(map) => {
-        mapRef.current = map;
-      }}
-      mapContainerStyle={containerStyle}
-      center={{ lat: center.lat, lng: center.lng }}
-      zoom={5}
-      onZoomChanged={handleZoomChange}
-      onCenterChanged={handleCenterChange}
-      options={{
-        minZoom: 3,
-        maxZoom: 10,
-        mapTypeId: "hybrid",
-        styles: [
-          {
-            featureType: "all",
-            elementType: "labels",
-            stylers: [{ visibility: "on" }],
-          },
-        ],
-      }}
-    >
-      {fireMarkers}
-      {questionMarkers}
-    </GoogleMap>
+    <div className="map">
+      <GoogleMap
+        ref={(map) => {
+          mapRef.current = map;
+        }}
+        mapContainerStyle={{
+          height: "75vh",
+          width: "95%",
+          margin: "0 auto",
+          borderRadius: "18px",
+          overflow: "hidden",
+        }}
+        center={{ lat: center.lat, lng: center.lng }}
+        zoom={5}
+        onZoomChanged={handleZoomChange}
+        onCenterChanged={handleCenterChange}
+        options={{
+          minZoom: 3,
+          maxZoom: 10,
+          mapTypeId: "hybrid",
+          styles: [
+            {
+              featureType: "all",
+              elementType: "labels",
+              stylers: [{ visibility: "on" }],
+            },
+          ],
+        }}
+      >
+        {fireMarkers}
+        {questionMarkers}
+      </GoogleMap>
+    </div>
   );
 };
 
