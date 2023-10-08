@@ -87,6 +87,22 @@ const SearchBar: React.FC = (): JSX.Element => {
         justifyContent: 'center', 
         alignItems: 'center',
     }}/>
+    <button 
+                style={{
+                    backgroundColor: '#4CAF50', // Green color
+                    border: 'none',
+                    color: 'white',           // White text
+                    padding: '8px 16px',
+                    cursor: 'pointer',
+                    marginRight: '8px',
+                    borderRadius: '0.6em',
+                }}
+                onClick={() => {
+                    // Logic for the search action, e.g., invoking Google Maps search
+                }}
+            >
+                Search
+            </button>
       <div id="map" ref={mapContainerRef} style={{ width: '100%', height: '100%' }}></div>
     </div>
   );
