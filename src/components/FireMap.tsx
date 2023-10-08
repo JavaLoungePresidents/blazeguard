@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 const containerStyle = {
@@ -6,22 +6,68 @@ const containerStyle = {
   height: "600px",
 };
 
-const fireMarkerURI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpVIqDmYQcchQdbGLijiWKhbBQmkrtOpgcukXNDEkKS6OgmvBwY/FqoOLs64OroIg+AHi6uKk6CIl/i8ptIjx4Lgf7+497t4BQrPGNKsnDmi6bWaSCSlfWJFCrwgjBBHjEGVmGansQg6+4+seAb7exXiW/7k/R79atBgQkIjjzDBt4nXimU3b4LxPLLKKrBKfE0+YdEHiR64rHr9xLrss8EzRzGXmiEViqdzFSheziqkRTxNHVU2nfCHvscp5i7NWq7P2PfkLI0V9Oct1miNIYhEppCFBQR1V1GAjRqtOioUM7Sd8/MOuP00uhVxVMHLMYwMaZNcP/ge/u7VKU5NeUiQB9L44zscoENoFWg3H+T52nNYJEHwGrvSOf6MJzH6S3uho0SNgYBu4uO5oyh5wuQMMPRmyKbtSkKZQKgHvZ/RNBWDwFgiver2193H6AOSoq6Ub4OAQGCtT9prPu/u6e/v3TLu/H6stcr2AH40oAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH5woHFCgJL1y8IAAAAJZJREFUWMPtllEOwCAIQyvZGXfIXdJ9b8m0TBBj6L/lgWgKpIJVLEzqifowvXjfw7Lw1Al8Fdd0DwAS1fkQgKUksnuXCWgBXa5AA+G2AyyE6xIyEMKYWC8eDWBRuOex7j/wJh+ZRuuseL7xPb/iBNgOoMzY+lZKWnsCFlPoZUQqQP6FYAIqnWC1EGw6VsfyHog2lqfCdQNETTgccDBqqgAAAABJRU5ErkJggg=="
+const fireMarkerURI = "/images/fire-marker.svg"
+const questionMarkerURI = "/images/question-marker.svg"
 
+const FireMap = ({ coordinates }) => {
 
-const FireMap = ({ fireList }) => {
-  const fireMarkers = fireList.map((fire, index) =>
-      <Marker key={index} position={{ lat: fire.latitude, lng: fire.longitude }} icon={fireMarkerURI} />
-  ) 
+  const [fireMarkers, updateFireMarkers] = useState([])
+  const [questionMarkers, updateQuestionMarkers] = useState([])
+
+  const [ref, setRef] = useState(null)
+
+  useEffect(() => {
+    fetch("https://wetca.ca/blaze/maps/fires/", {
+      headers: { "Content-Type": "application/json" },
+      method: "POST", 
+      body: JSON.stringify({
+        "la": coordinates.latitude,
+        "lo": coordinates.longitude,
+        "radius": 500
+      })
+    }).then(r => r.json()).then((json) => {
+      const markers = json.map((fire, index) => (
+        <Marker key={index} position={{
+            lat: JSON.parse(fire.latitude),
+            lng: JSON.parse(fire.longitude)
+        }} icon={fireMarkerURI} />
+      ))
+      updateFireMarkers(markers)
+    })
+
+    fetch("https://wetca.ca/blaze/report/reports", {
+      headers: { "Content-Type": "application/json", },
+      method: "POST", 
+      body: JSON.stringify({
+        "latitude": coordinates.latitude,
+        "longitude": coordinates.longitude,
+      })
+    }).then(r => r.json()).then((json) => {
+      const markers = json.map((fire, index) => (
+        <Marker key={index} position={{
+            lat: JSON.parse(fire.latitude),
+            lng: JSON.parse(fire.longitude)
+        }} icon={questionMarkerURI} />
+      ))
+      updateQuestionMarkers(markers)
+    })
+
+    
+  }, [])
 
   return (
-    <LoadScript googleMapsApiKey="AIzaSyArBIg50Ku4QTfoyPSW3xbA3cUh_VjZlsI">
+    <LoadScript 
+      googleMapsApiKey={process.env.NEXT_PUBLIC_MAPS_KEY}
+      onMapLoad={ (R) => { console.log('ref: ', R) } }
+    >
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={{ lat: 40, lng: -83 }}
-        zoom={3}
+        center={{ lat: coordinates.latitude, lng: coordinates.longitude }}
+        zoom={5}
+        onCenterChanged={ (event) => console.log(event, ref) }
       >
         {fireMarkers}
+        {questionMarkers}
       </GoogleMap>
     </LoadScript>
   );
