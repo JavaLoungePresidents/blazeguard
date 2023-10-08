@@ -8,6 +8,8 @@ const SearchBar = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
 
+  console.log(longitude, latitude);
+  
   const {
     suggestions: { data },
     setValue,
