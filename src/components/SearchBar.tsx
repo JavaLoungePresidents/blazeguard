@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputGroup, FormControl, Button } from "react-bootstrap";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { FaSearch } from "react-icons/fa";
 
-const SearchBar = () => {
-  const [location, setLocation] = useState("");
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
+interface SearchBarProps {
+  onLocationChange: (location: {
+    lat: number;
+    lng: number;
+    textLocation: string;
+  }) => void;
+}
 
-  console.log(longitude, latitude);
-  
+const SearchBar = ({ onLocationChange }: SearchBarProps) => {
+  const [locValue, setLocValue] = useState<string>("");
+  const [textLocation, setTextLocation] = useState<string>("Toronto, Ontario");
+
   const {
     suggestions: { data },
     setValue,
@@ -19,41 +24,53 @@ const SearchBar = () => {
   });
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(event.target.value);
+    console.log("HANDLE LOCATION SEARCH RUN!");
+    setLocValue(event.target.value);
     setValue(event.target.value);
   };
 
   const handleSearchSubmit = async () => {
-    if (!location) return;
+    if (!locValue) return;
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${process.env.NEXT_PUBLIC_MAPS_KEY}`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${locValue}&key=${process.env.NEXT_PUBLIC_MAPS_KEY}`
     );
     const data = await response.json();
+    if (data.results.length === 0) return;
     const { lat, lng } = data.results[0].geometry.location;
-    setLatitude(lat);
-    setLongitude(lng);
+    if (!lat || !lng) return;
+    if (lat && lng) {
+      setTextLocation(locValue);
+      onLocationChange({ lat, lng, textLocation });
+    }
+    clearSuggestions();
   };
+
+  useEffect(() => {
+    handleSearchSubmit();
+  }, [textLocation]);
 
   return (
     <InputGroup className="search-bar">
       <FormControl
         type="text"
         placeholder="Enter a location"
-        value={location}
+        value={locValue}
         onChange={handleSearchChange}
         onBlur={() => clearSuggestions()}
         list="suggestions"
         className="search-bar-input"
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            handleSearchSubmit();
+          }
+        }}
       />
       <datalist id="suggestions">
         {data.map((suggestion) => (
           <option key={suggestion.place_id} value={suggestion.description} />
         ))}
       </datalist>
-      <Button
-        onClick={handleSearchSubmit}
-        className="search-bar-button"
-      >
+      <Button onClick={handleSearchSubmit} className="search-bar-button">
         <FaSearch className="search-bar-icon" />
       </Button>
     </InputGroup>

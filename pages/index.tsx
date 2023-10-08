@@ -1,26 +1,62 @@
 import AppNavbar from "@/components/AppNavbar";
 import Heading from "@/components/Heading";
 import FireMap from "@/components/FireMap";
+import { useState } from "react";
 
-const dummyCoordinates = { lat: 50, lng: -120 };
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
+interface Location extends Coordinates {
+  textLocation: string;
+}
 
 const Index = () => {
+  const [coordinates, setCoordinates] = useState<Coordinates>({
+    lat: 0,
+    lng: 0,
+  });
+  const [textLocation, setTextLocation] = useState<string | null>(null);
+
+  const updateLocation = (newLocation: Location) => {
+    if (!newLocation.lat && !newLocation.lng) return;
+    console.log("HANDLE LOCATION INDEX RUN!");
+    setCoordinates({ lat: newLocation.lat, lng: newLocation.lng });
+    setTextLocation(newLocation.textLocation);
+  };
+
   return (
     <>
-      <AppNavbar />
-      <div className="heading container-xl p-0">
-        <Heading
-          content={
-            <h2>
-              Live fires near <span>New York, NY.</span>
-            </h2>
-          }
-        />
-      </div>
-      <div>
-        <FireMap coordinates={dummyCoordinates} />
-      </div>
+      <AppNavbar updateGlobalLocation={updateLocation} />
+      {textLocation ? (
+        <div>
+          <Heading
+            content={
+              <h2>
+                Live fires near <span>{textLocation}</span>
+              </h2>
+            }
+          />
+          <FireMap coordinates={coordinates} />
+        </div>
+      ) : (
+        <>
+          <div>
+            <Heading
+              content={
+                <h2>
+                  Please choose a <span>location</span>.
+                </h2>
+              }
+            />
+          </div>
+          <FireMap coordinates={coordinates} />
+        </>
+      )}
+      )
     </>
   );
 };
+
 export default Index;
