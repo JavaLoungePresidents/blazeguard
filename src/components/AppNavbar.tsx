@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
+import SearchBar from "@/components/SearchBar";
 
 function AppNavbar() {
   return (
@@ -16,7 +17,7 @@ function AppNavbar() {
         />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mx-auto">
-            <p>Searchbar.</p>
+            <SearchBar />
           </Nav>
           <Nav>
             <Nav.Link href="#about" className="nav-links">

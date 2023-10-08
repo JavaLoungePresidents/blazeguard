@@ -1,0 +1,39 @@
+@use "../../../styles/colors" as color
+@use "../../../styles/fonts" as font
+
+.search-bar-input
+    border-radius: 18px !important
+    background-color: color.$primary
+    color: color.$secondary !important
+    height: 3.3rem
+    max-width: 55vw !important
+    min-width: 35vw !important
+    &:focus
+        z-index: 1 !important
+        background-color: color.$primary
+
+.search-bar-input::placeholder
+    color: color.$placeholder
+    font-family: font.$primary
+
+.search-bar-button
+    border: none
+    background-color: transparent
+    padding: 0
+    color: inherit
+    font-size: inherit
+    cursor: pointer
+
+.search-bar-icon
+    position: absolute
+    top: 50%
+    right: 1rem
+    transform: translateY(-50%)
+    color: color.$secondary
+    font-size: 1.5rem
+    cursor: pointer
+    transition: color 0.2s ease-in-out
+    z-index: 999
+
+    &:hover
+        color: #c9c9c9
