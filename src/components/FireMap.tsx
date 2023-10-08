@@ -1,73 +1,86 @@
 import React, { useEffect, useState } from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 
 const containerStyle = {
   width: "900px",
   height: "600px",
 };
 
-const fireMarkerURI = "/images/fire-marker.svg"
-const questionMarkerURI = "/images/question-marker.svg"
+const fireMarkerURI = "/images/fire-marker.svg";
+const questionMarkerURI = "/images/question-marker.svg";
 
-const FireMap = ({ coordinates }) => {
+interface FireMapProps {
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+}
 
-  const [fireMarkers, updateFireMarkers] = useState([])
-  const [questionMarkers, updateQuestionMarkers] = useState([])
-
-  const [ref, setRef] = useState(null)
+const FireMap = ({ coordinates }: FireMapProps) => {
+  const [fireMarkers, updateFireMarkers] = useState([]);
+  const [questionMarkers, updateQuestionMarkers] = useState([]);
 
   useEffect(() => {
     fetch("https://wetca.ca/blaze/maps/fires/", {
       headers: { "Content-Type": "application/json" },
-      method: "POST", 
+      method: "POST",
       body: JSON.stringify({
-        "la": coordinates.latitude,
-        "lo": coordinates.longitude,
-        "radius": 500
-      })
-    }).then(r => r.json()).then((json) => {
-      const markers = json.map((fire, index) => (
-        <Marker key={index} position={{
-            lat: JSON.parse(fire.latitude),
-            lng: JSON.parse(fire.longitude)
-        }} icon={fireMarkerURI} />
-      ))
-      updateFireMarkers(markers)
+        la: coordinates.lat,
+        lo: coordinates.lng,
+        radius: 500,
+      }),
     })
+      .then((r) => r.json())
+      .then((json) => {
+        const markers = json.map(
+          (fire: { latitude: string; longitude: string }, index: number) => (
+            <Marker
+              key={index}
+              position={{
+                lat: JSON.parse(fire.latitude),
+                lng: JSON.parse(fire.longitude),
+              }}
+              icon={fireMarkerURI}
+            />
+          )
+        );
+        updateFireMarkers(markers);
+      });
 
     fetch("https://wetca.ca/blaze/report/reports", {
-      headers: { "Content-Type": "application/json", },
-      method: "POST", 
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
       body: JSON.stringify({
-        "latitude": coordinates.latitude,
-        "longitude": coordinates.longitude,
-      })
-    }).then(r => r.json()).then((json) => {
-      const markers = json.map((fire, index) => (
-        <Marker key={index} position={{
-            lat: JSON.parse(fire.latitude),
-            lng: JSON.parse(fire.longitude)
-        }} icon={questionMarkerURI} />
-      ))
-      updateQuestionMarkers(markers)
+        latitude: coordinates.lat,
+        longitude: coordinates.lng,
+      }),
     })
-  }, [])
-
+      .then((r) => r.json())
+      .then((json) => {
+        const markers = json.map(
+          (fire: { latitude: string; longitude: string }, index: number) => (
+            <Marker
+              key={index}
+              position={{
+                lat: JSON.parse(fire.latitude),
+                lng: JSON.parse(fire.longitude),
+              }}
+              icon={questionMarkerURI}
+            />
+          )
+        );
+        updateQuestionMarkers(markers);
+      });
+  }, []);
   return (
-    <LoadScript 
-      googleMapsApiKey={process.env.NEXT_PUBLIC_MAPS_KEY}
-      onMapLoad={ (R) => { console.log('ref: ', R) } }
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={{ lat: coordinates.lat, lng: coordinates.lng }}
+      zoom={5}
     >
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={{ lat: coordinates.latitude, lng: coordinates.longitude }}
-        zoom={5}
-        onCenterChanged={ (event) => console.log(event, ref) }
-      >
-        {fireMarkers}
-        {questionMarkers}
-      </GoogleMap>
-    </LoadScript>
+      {fireMarkers}
+      {questionMarkers}
+    </GoogleMap>
   );
 };
 

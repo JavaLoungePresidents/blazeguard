@@ -1,5 +1,8 @@
 import AppNavbar from "@/components/AppNavbar";
 import Heading from "@/components/Heading";
+import FireMap from "@/components/FireMap";
+
+const dummyCoordinates = { lat: 50, lng: -120 };
 
 const Index = () => {
   return (
@@ -13,6 +16,9 @@ const Index = () => {
             </h2>
           }
         />
+      </div>
+      <div>
+        <FireMap coordinates={dummyCoordinates} />
       </div>
     </>
   );
