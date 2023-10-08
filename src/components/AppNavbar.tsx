@@ -8,7 +8,7 @@ function AppNavbar() {
   return (
     <Navbar expand="lg" className="navbar-container">
       <Container>
-        <Navbar.Brand className="m-0 logo" href="#home">
+        <Navbar.Brand className="m-0 logo" href="/">
           Blaze<span>Guard</span>.
         </Navbar.Brand>
         <Navbar.Toggle
@@ -20,7 +20,7 @@ function AppNavbar() {
             <SearchBar />
           </Nav>
           <Nav>
-            <Nav.Link href="#about" className="nav-links">
+            <Nav.Link href="/about" className="nav-links">
               About
             </Nav.Link>
           </Nav>
