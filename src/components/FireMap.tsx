@@ -51,8 +51,6 @@ const FireMap = ({ coordinates }) => {
       ))
       updateQuestionMarkers(markers)
     })
-
-    
   }, [])
 
   return (
@@ -71,6 +69,6 @@ const FireMap = ({ coordinates }) => {
       </GoogleMap>
     </LoadScript>
   );
-}
+};
 
 export default FireMap;

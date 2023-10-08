@@ -1,0 +1,23 @@
+@use "../../../styles/colors" as color
+
+span
+    font-weight: bold
+
+.logo
+    font-size: 1.5rem
+
+.navbar-container
+    color: color.$primary
+    background-color: color.$secondary
+    padding-top: 1rem
+    padding-bottom: 1rem
+
+.hamburger-menu
+    color: color.$secondary
+    border: none
+
+.nav-link
+    transition: all 0.2s ease-in-out
+    &:hover
+        color: color.$placeholder
+        transform: scale(1.04)
