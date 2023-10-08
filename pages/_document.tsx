@@ -11,6 +11,11 @@ export default function Document() {
           crossOrigin="anonymous"
         />
       </Head>
+      <script
+        async
+        defer
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAPS_KEY}&libraries=places&v=weekly&callback=Function.prototype`}
+      ></script>
       <body>
         <Main />
         <NextScript />
