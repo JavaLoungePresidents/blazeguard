@@ -7,7 +7,7 @@ interface CustomCardProps {
 
 const CardContainer: React.FC<CustomCardProps> = ({ content }) => {
   return (
-    <Card className="fluid">
+    <Card className="fluid card-container">
       <div className="card-content">
         {content}
       </div>

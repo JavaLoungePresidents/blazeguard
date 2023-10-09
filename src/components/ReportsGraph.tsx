@@ -1,81 +1,74 @@
-//Saymon
 import React, { useEffect, useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { Container, Row, Col } from "react-bootstrap";
 
-const graphTitle = "Count(Amount of Fires) Vs. Days";
-let data = {
-  latitude: 42.12345678,
-  longitude: -73.98765432,
-};
+const graphTitle = "Count (Number of Fires) vs. Days";
 
-async function fetchDataFromAPI() {
-  try {
-    const response = await fetch("https://wetca.ca/blaze/report/reports/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    const Mydata = await response.json();
-
-    return Mydata;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return null;
-  }
+interface ReportsGraphProps {
+  reports: any;
+  fires: any;
 }
 
-function groupChartDataByDay(chartData: any[]) {
+function groupChartDataByDay(chartData: ReportsGraphProps) {
   const groupedData: any[] = [];
   const dayCounts: { [key: string]: number } = {};
+  console.log(chartData);
+  if ((chartData && chartData.reports) || chartData.fires) {
+    chartData.reports.forEach((item: any) => {
+      const date = new Date(item.report_datetime);
+      const day = date.getDate().toString().padStart(2, "0");
 
-  chartData.forEach((item) => {
-    const date = new Date(item.report_datetime);
-    const day = date.getDate().toString().padStart(2, "0");
+      if (dayCounts.hasOwnProperty(day)) {
+        dayCounts[day]++;
+      } else {
+        dayCounts[day] = 1;
+      }
+    });
+    chartData.fires.forEach((item: any) => {
+      const date = new Date(item.acq_date);
+      const day = item.acq_date.split("-")[2];
+      date.setDate(parseInt(day));
 
-    if (dayCounts.hasOwnProperty(day)) {
-      dayCounts[day]++;
-    } else {
-      dayCounts[day] = 1;
-    }
-  });
+      if (dayCounts.hasOwnProperty(day)) {
+        dayCounts[day]++;
+      } else {
+        dayCounts[day] = 1;
+      }
+    });
+  }
   for (const day in dayCounts) {
     if (dayCounts.hasOwnProperty(day)) {
       groupedData.push({ day, count: dayCounts[day] });
     }
   }
-  groupedData.sort((a, b) => (a.day < b.day ? -1 : 1));
+
+  groupedData.sort((a, b) => parseInt(a.day) - parseInt(b.day));
+  console.log(groupedData);
   return groupedData;
 }
 
-interface Coordinates {
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-}
-
-function ReportsGraph({ coordinates }: Coordinates) {
-  const [chartData, setChartData] = useState<{ Day: string; count: number }[]>([]);
+function ReportsGraph(fireData: ReportsGraphProps) {
+  const [dayChartData, setDayChartData] = useState<
+    { day: string; count: number }[]
+  >([]);
 
   useEffect(() => {
-    data.latitude = coordinates.lat;
-    data.longitude = coordinates.lng;
-    async function fetchData() {
-      const rawData = await fetchDataFromAPI();
-      if (rawData) {
-        const processedData = groupChartDataByDay(rawData);
-        setChartData(processedData);
-      }
+    if (fireData.fires.length === 0 && fireData.reports.length === 0) {
+      setDayChartData([{ day: "0", count: 0 }]);
+      return;
     }
+    if (fireData.reports.length === 0) return;
+    setDayChartData(groupChartDataByDay(fireData));
+  }, [fireData]);
 
-    fetchData();
-  }, []);
   try {
     return (
       <Container>
@@ -83,14 +76,31 @@ function ReportsGraph({ coordinates }: Coordinates) {
           <span>
             <h3>{graphTitle}</h3>
           </span>
-          <Col className="graphContainer">
+          <Col className="graph-container">
             <ResponsiveContainer width="100%" height={400}>
-              <AreaChart data={chartData}>
+              <AreaChart data={dayChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis dataKey="count" />
                 <Tooltip />
-                <Area type="monotone" dataKey="count" stroke="#f00f1e" fill="#000" />
+                <Area
+                  type="monotone"
+                  dataKey="count"
+                  stroke="#f00f1e"
+                  fill="url(#orangeGradient)"
+                />
+                <defs>
+                  <linearGradient
+                    id="orangeGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor="#ff8c00" />
+                    <stop offset="100%" stopColor="#ff4500" />
+                  </linearGradient>
+                </defs>
               </AreaChart>
             </ResponsiveContainer>
           </Col>
@@ -98,7 +108,7 @@ function ReportsGraph({ coordinates }: Coordinates) {
       </Container>
     );
   } catch (error) {
-    return <h3>The Graph has no data at the moment!</h3>;
+    console.error(error);
   }
 }
 
