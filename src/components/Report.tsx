@@ -27,14 +27,13 @@ function Report() {
     const apiUrl = "https://wetca.ca/blaze/report/submit";
 
     const currentDateTime = new Date().toISOString().split(".")[0];
-    if (!(latitude || longitude)) {
-      const postData = {
-        report_datetime: currentDateTime,
-        latitude: latitude,
-        longitude: longitude,
-        image: null,
-      };
-    }
+    const postData = {
+      report_datetime: currentDateTime,
+      latitude: 40,
+      longitude: -70,
+      image: null,
+    };
+
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
