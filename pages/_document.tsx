@@ -14,7 +14,7 @@ export default function Document() {
       <script
         async
         defer
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAPS_KEY}&libraries=places&v=weekly&callback=Function.prototype`}
+        src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyDZzerwjhlQ1K8GNaLwRH8ab3K4rqI2iE8&libraries=places&v=weekly&callback=Function.prototype`}
       ></script>
       <body>
         <Main />

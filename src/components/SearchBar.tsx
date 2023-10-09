@@ -31,7 +31,7 @@ const SearchBar = ({ onLocationChange }: SearchBarProps) => {
   const handleSearchSubmit = async () => {
     if (!locValue) return;
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${locValue}&key=${process.env.NEXT_PUBLIC_MAPS_KEY}`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${locValue}&key=AIzaSyDZzerwjhlQ1K8GNaLwRH8ab3K4rqI2iE8`
     );
     const data = await response.json();
     if (data.results.length === 0) return;
