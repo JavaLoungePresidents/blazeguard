@@ -1,0 +1,57 @@
+@use "../../../styles/colors" as color
+@use "../../../styles/fonts" as font
+
+.report-form
+    color: color.$primary
+    padding: 5px
+    h3
+        padding: 0px
+        font-weight: bold
+    .hidden-input
+        visibility: hidden
+        display: none
+    .btn-row
+        display: flex
+        justify-content: space-between
+        align-items: center
+    .btn-container
+        flex-grow: 1
+        text-align: right
+        button
+            text-align: right
+            color: color.$secondary
+            border-radius: 18px
+            margin-left: 1rem
+            padding: 1rem
+            margin-bottom: 5px
+            background-color: #1d1d1d
+            border-color: #1d1d1d
+        button:hover
+            border-color: color.$placeholder
+            background: color.$primary
+        #light-btn
+            border-color: color.$placeholder
+            background: color.$primary
+        #light-btn:hover
+            background-color: #1d1d1d
+            border-color: #1d1d1d
+
+    .row
+        padding: 16px
+
+.report-bar-input
+    border-radius: 18px !important
+    background-color: color.$primary
+    color: color.$secondary !important
+    height: 3.3rem
+    max-width: 55vw !important
+    &:focus
+        z-index: 1 !important
+        background-color: color.$primary
+
+.report-bar-input::placeholder
+    color: color.$placeholder
+    font-family: font.$primary
+
+#report-fire
+    padding: 0

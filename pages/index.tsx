@@ -3,6 +3,7 @@ import Heading from "@/components/Heading";
 import FireMap from "@/components/FireMap";
 import CardContainer from "@/components/CardContainer";
 import ReportsGraph from "@/components/ReportsGraph";
+import Report from "@/components/Report";
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
@@ -44,7 +45,6 @@ const Index = () => {
           }),
         });
         const fires = await response.json();
-        console.log(fires);
         setFires(fires);
       } catch (error) {
         console.error(error);
@@ -65,7 +65,6 @@ const Index = () => {
           }),
         });
         const reports = await response.json();
-        console.log(reports);
         setReports(reports);
       } catch (error) {
         console.error(error);
@@ -117,7 +116,7 @@ const Index = () => {
                   </h2>
                 }
               />
-              <CardContainer content={<p>Placeholder</p>} />
+              <CardContainer content={<Report />} />
             </Col>
           </Row>
         </div>
